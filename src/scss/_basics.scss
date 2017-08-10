@@ -1,0 +1,19 @@
+* {
+  cursor: default;
+}
+
+html {
+  font-family: "Courier New", arial, sans-serif;
+  color: $colorPrimary;
+  background-color: $colorSecondary;
+  text-shadow: $colorPrimary 0 0 0.5em;
+}
+
+body {
+  width: 54 * $gridWidth;
+  height: 22 * $gridHeight;
+}
+
+em {
+  font-style: normal;
+}

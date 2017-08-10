@@ -1,0 +1,6 @@
+/node_modules
+/build
+/.idea
+*.css
+*.css.map
+/src/words_raw.txt

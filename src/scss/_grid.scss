@@ -1,0 +1,99 @@
+.grid {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  span {
+    width: $gridWidth;
+    display: none;
+    //visibility: hidden;
+
+    &.highlight,
+    &.highlight--extra {
+      color: $colorSecondary;
+      background-color: $colorPrimary;
+      box-shadow: $colorPrimary 0 0 0.5em;
+      text-shadow: $colorSecondary 0 0 0.25em;
+    }
+  }
+}
+
+.column {
+  flex: 1 1 0;
+  width: auto;
+
+  //kolommen maken
+  @for $i from 1 through 54 {
+    &--#{$i} {
+      flex: 0 0 percentage($i / 54);
+      max-width: percentage($i / 54);
+    }
+
+    &__fixed--#{$i} {
+      flex: 0 0 ($i * $gridWidth);
+      max-width: ($i * $gridWidth);
+    }
+  }
+}
+
+.row {
+  height: $gridHeight;
+  display: flex;
+
+  &--full-width {
+    width: 100%;
+    height: 304px;
+    display: flex;
+  }
+}
+
+.terminal {
+  &__column-pre {
+    width: 7 * $gridWidth;
+    display: block;
+  }
+
+  &__column-entry {
+    width: 13 * $gridWidth;
+    display: block;
+  }
+}
+
+#entries {
+  display: flex;
+  flex-flow: column nowrap;
+
+  .column:first-child {
+    margin-right: $gridWidth;
+  }
+}
+
+#console {
+  height: 100%;
+  justify-content: flex-end;
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
+}
+
+#consoleLine {
+  display: flex;
+
+  .caret {
+    display: none;
+    width: $gridWidth;
+    height: $gridHeight;
+    background-color: $colorPrimary;
+    box-shadow: $colorPrimary 0 0 0.5em;
+  }
+}
+
+.attempt-block {
+  display: none;
+  width: $gridWidth;
+  height: $gridHeight;
+  background-color: $colorPrimary;
+  box-shadow: $colorPrimary 0 0 0.5em;
+  margin-right: 8px;
+}
