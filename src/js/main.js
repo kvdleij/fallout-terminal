@@ -28,6 +28,12 @@
                     highlightMenu($(".menu").first());
                 }
 
+                if ($("#mainLoadingScreen").length !== 0){
+                    setInterval(function(){
+                        window.location.href="main";
+                    }, 400);
+                }
+
                 return true;
             }
         }, $speed);
@@ -39,119 +45,159 @@
         var $parentRow = $currentTarget.closest(".row");
         var emClass = $currentTarget.closest("em").attr("class");
 
+        var $currentMenuOption = $(".highlight--menu");
+
         clearInterval(typeInterval);
         $(".grid span").css("display", "inline-block");
 
-        if ($(".menu").length) {
+        if ($("#mainLoadingScreen").length !== 0){
+            setInterval(function(){
+                window.location.href="main";
+            }, 400);
+        }
+
+        if ($(".menu").length && $(".highlight--menu").length === 0) {
             highlightMenu($(".menu").first());
         }
 
         switch ($direction) {
             //down
             case 115:
-                var $nextRow = $parentRow.next(".row");
-                if ($nextRow.length !== 0) {
-                    $(".highlight").removeClass("highlight");
-                    $nextRow.find("." + emClass).find("span:eq(" + spanIndex + ")").addClass("highlight");
+                if ($currentTarget.length !== 0) {
+                    var $nextRow = $parentRow.next(".row");
+                    if ($nextRow.length !== 0) {
+                        $(".highlight").removeClass("highlight");
+                        $nextRow.find("." + emClass).find("span:eq(" + spanIndex + ")").addClass("highlight");
+                    }
+                } else if ($currentMenuOption.length) {
+                    var $nextOption = $currentMenuOption.next(".menu");
+                    if ($nextOption.length !== 0) {
+                        $(".highlight--extra").removeClass("highlight--extra");
+                        $currentMenuOption.removeClass("highlight--menu");
+                        highlightMenu($nextOption);
+                    }
                 }
                 break;
             //right
             case 100:
-                var $nextSpan = $currentTarget.next("span");
-                if ($nextSpan.length !== 0) {
-                    $(".highlight").removeClass("highlight");
-                    $nextSpan.addClass("highlight");
-                } else if (emClass === "column-l") {
-                    $(".highlight").removeClass("highlight");
-                    $parentRow.find(".column-r").find("span").first().addClass("highlight");
+                if ($currentTarget.length !== 0) {
+                    var $nextSpan = $currentTarget.next("span");
+                    if ($nextSpan.length !== 0) {
+                        $(".highlight").removeClass("highlight");
+                        $nextSpan.addClass("highlight");
+                    } else if (emClass === "column-l") {
+                        $(".highlight").removeClass("highlight");
+                        $parentRow.find(".column-r").find("span").first().addClass("highlight");
+                    }
                 }
                 break;
             //up
             case 119:
-                var $prevRow = $parentRow.prev(".row");
-                if ($prevRow.length !== 0) {
-                    $(".highlight").removeClass("highlight");
-                    $prevRow.find("." + emClass).find("span:eq(" + spanIndex + ")").addClass("highlight");
+                if ($currentTarget.length !== 0) {
+                    var $prevRow = $parentRow.prev(".row");
+                    if ($prevRow.length !== 0) {
+                        $(".highlight").removeClass("highlight");
+                        $prevRow.find("." + emClass).find("span:eq(" + spanIndex + ")").addClass("highlight");
+                    }
+                } else if ($currentMenuOption.length !== 0) {
+                    var $prevOption = $currentMenuOption.prev(".menu");
+                    if ($prevOption.length !== 0) {
+                        $(".highlight--extra").removeClass("highlight--extra");
+                        $currentMenuOption.removeClass("highlight--menu");
+                        highlightMenu($prevOption);
+                    }
                 }
                 break;
             //left
             case 97:
-                var $prevSpan = $currentTarget.prev("span");
-                if ($prevSpan.length !== 0) {
-                    $(".highlight").removeClass("highlight");
-                    $prevSpan.addClass("highlight");
-                } else if (emClass === "column-r") {
-                    $(".highlight").removeClass("highlight");
-                    $parentRow.find(".column-l").find("span").last().addClass("highlight");
+                if ($currentTarget.length !== 0) {
+                    var $prevSpan = $currentTarget.prev("span");
+                    if ($prevSpan.length !== 0) {
+                        $(".highlight").removeClass("highlight");
+                        $prevSpan.addClass("highlight");
+                    } else if (emClass === "column-r") {
+                        $(".highlight").removeClass("highlight");
+                        $parentRow.find(".column-l").find("span").last().addClass("highlight");
+                    }
                 }
                 break;
             //Enter or space
             case 13:
             case 32:
                 if (!typingInitialScreen) {
-                    var lineType = ""
-                    if ($(".highlight").hasClass("spec-seq-start") && $(".highlight--extra").length > 0) {
-                        $(".highlight").removeClass("spec-seq-start");
-                        lineType = "spec-seq";
-                    }
-                    if ($(".highlight").hasClass("word")) {
-                        lineType = "word";
-                    }
-                    addConsoleLine($("#consoleLine").find("em").text(), false);
+                    if ($currentTarget.length !== 0) {
+                        var lineType = ""
+                        if ($(".highlight").hasClass("spec-seq-start") && $(".highlight--extra").length > 0) {
+                            $(".highlight").removeClass("spec-seq-start");
+                            lineType = "spec-seq";
+                        }
+                        if ($(".highlight").hasClass("word")) {
+                            lineType = "word";
+                        }
+                        addConsoleLine($("#consoleLine").find("em").text(), false);
 
-                    if (lineType !== "") {
-                        $.ajax({
-                            url: "ajaxHandler.php",
-                            type: "POST",
-                            data: {
-                                inputString: $("#consoleLine").find("em").text(),
-                                lineType: lineType
-                            },
-                            success: function (result) {
-                                if (result.returnType === "spec-seq-remove") {
-                                    var wordToRemove = result.misc.wordToRemove;
-                                    $("[data-word='" + wordToRemove + "'").removeClass().removeAttr("data-word").text(".");
-                                }
+                        if (lineType !== "") {
+                            $.ajax({
+                                url: "ajaxHandler.php",
+                                type: "POST",
+                                data: {
+                                    inputString: $("#consoleLine").find("em").text(),
+                                    lineType: lineType
+                                },
+                                success: function (result) {
+                                    if (result.returnType === "spec-seq-remove") {
+                                        var wordToRemove = result.misc.wordToRemove;
+                                        $("[data-word='" + wordToRemove + "'").removeClass().removeAttr("data-word").text(".");
+                                    }
 
-                                if (result.returnType === "spec-seq-reset") {
-                                    var $attempts = $(".attempts");
-                                    $attempts.data("attempts", 4);
-                                    renderAttempts();
-                                    $attempts.find("span").each(function () {
-                                        $(this).css("display", "inline-block");
-                                    });
-                                }
-
-                                if (result.returnType === "word") {
-                                    if (result.misc.attempt === "failed") {
+                                    if (result.returnType === "spec-seq-reset") {
                                         var $attempts = $(".attempts");
-                                        var remaining = $attempts.data("attempts");
-                                        $attempts.data("attempts", remaining - 1);
+                                        $attempts.data("attempts", 4);
                                         renderAttempts();
                                         $attempts.find("span").each(function () {
                                             $(this).css("display", "inline-block");
                                         });
+                                    }
 
-                                        if (remaining === 1) {
-                                            addConsoleLine("Entry Denied.", false);
-                                            addConsoleLine("Init Lockout", false);
+                                    if (result.returnType === "word") {
+                                        if (result.misc.attempt === "failed") {
+                                            var $attempts = $(".attempts");
+                                            var remaining = $attempts.data("attempts");
+                                            $attempts.data("attempts", remaining - 1);
+                                            renderAttempts();
+                                            $attempts.find("span").each(function () {
+                                                $(this).css("display", "inline-block");
+                                            });
+
+                                            if (remaining === 1) {
+                                                addConsoleLine("Entry Denied.", false);
+                                                addConsoleLine("Init Lockout", false);
+                                                $(".highlight").removeClass("highlight");
+                                                $(".highlight--extra").removeClass("highlight--extra");
+                                                return false;
+                                            }
+                                        } else if (result.misc.attempt === "success") {
                                             $(".highlight").removeClass("highlight");
                                             $(".highlight--extra").removeClass("highlight--extra");
-                                            return false;
+                                            setInterval(function(){
+                                                window.location.href="main";
+                                            }, 400);
                                         }
-                                    } else if (result.misc.attempt === "success") {
-                                        $(".highlight").removeClass("highlight");
-                                        $(".highlight--extra").removeClass("highlight--extra");
                                     }
-                                }
 
-                                var returnString = result.returnString.split("|");
-                                $.each(returnString, function (key, value) {
-                                    addConsoleLine(value, false);
-                                });
-                            }
-                        });
+                                    var returnString = result.returnString.split("|");
+                                    $.each(returnString, function (key, value) {
+                                        addConsoleLine(value, false);
+                                    });
+                                }
+                            });
+                        }
+                    } else if ($currentMenuOption.length !== 0) {
+                        var target = $currentMenuOption.data("targetloc");
+                        window.location.href = target;
                     }
+                } else {
+                    typingInitialScreen = false;
                 }
                 break;
         }

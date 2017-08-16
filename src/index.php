@@ -12,14 +12,18 @@ include_once "classes/TermLink.php";
 
 use ROBCO\TermLink;
 
+$queryString = $_SERVER["QUERY_STRING"];
 $request = $_SERVER["REQUEST_URI"];
+if (!empty($queryString)) {
+    $request = str_replace("?" . $queryString, "", $request);
+}
 $params = explode("/", $request);
 
 $difficulty = TermLink::DIFF_NOVICE;
 
 if (filter_has_var(INPUT_GET, "diff")) {
 	$difficulty = filter_input(INPUT_GET, "diff", FILTER_SANITIZE_NUMBER_INT);
-	if ($difficulty < 0 || $difficulty > 3) {
+	if ($difficulty < 0 || $difficulty > 4) {
 		$difficulty = TermLink::DIFF_NOVICE;
 	}
 }
@@ -42,7 +46,7 @@ $termLink = new TermLink($difficulty);
 		include_once($params[1] . ".php");
 	} else {
 		?>
-        <div class="column column--54 terminal__header">
+        <div class="column column--54 terminal__header" id="mainLoadingScreen">
             <div class="row"><?= $termLink->wrapCharacters("Welcome to ROBCO Industries (TM) Termlink") ?></div>
             <div class="row"></div>
             <div class="row"><?= $termLink->wrapCharacters(">SET TERMINAL/INQUIRE") ?></div>
@@ -61,9 +65,6 @@ $termLink = new TermLink($difficulty);
             <div class="row"><?= $termLink->wrapCharacters("Maintenance Mode") ?></div>
             <div class="row"></div>
             <div class="row"><?= $termLink->wrapCharacters(">RUN DEBUG/ACCOUNTS.F") ?></div>
-            <div class="row"></div>
-            <div class="row menu"><?= $termLink->wrapCharacters("[ INSTRUCTIONS ]") ?></div>
-            <div class="row menu"><?= $termLink->wrapCharacters("[ HACK TERMINAL ]") ?></div>
         </div>
 	<?php } ?>
 

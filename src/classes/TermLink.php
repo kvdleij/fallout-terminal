@@ -15,6 +15,7 @@ class TermLink {
 	const DIFF_ADVANCED = 1;
 	const DIFF_EXPERT = 2;
 	const DIFF_MASTER = 3;
+	const DIFF_SPECIAL = 4;
 
 	private $spec_char = "'.;*#$-^%()<>[]{}!=+\/|@.\\\":_?";
 	private $words = array();
@@ -46,6 +47,26 @@ class TermLink {
 		} else {
 			// error opening the file.
 		}
+
+		$this->words["special"] = Array(
+			"AEROSMITH",
+			"LAMBOFGOD",
+			"METALLICA",
+			"MOTORHEAD",
+			"PINKFLOYD",
+			"MARILLION",
+			"DUBLINERS",
+			"FOREIGNER",
+			"KRAFTWERK",
+			"SCORPIONS",
+			"STATUSQUO",
+			"STEELYDAN",
+			"THINLIZZY",
+			"SEPULTURA",
+			"RAMMSTEIN",
+			"DISTURBED",
+			"POWERWOLF",
+		);
 	}
 
 	public function wrapCharacters($input, $codeClasses = false, $strIndex = 0, $visibleFromStart = false) {
@@ -157,6 +178,9 @@ class TermLink {
 				break;
 			case self::DIFF_MASTER:
 				$this->wordLength = rand(11, 12);
+				break;
+			case self::DIFF_SPECIAL:
+				$this->wordLength = "special";
 				break;
 		}
 
