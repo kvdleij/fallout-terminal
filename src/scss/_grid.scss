@@ -6,8 +6,11 @@
 
   span {
     width: $gridWidth;
-    display: none;
-    //visibility: hidden;
+
+    &:not(.visible) {
+      display: none;
+      //visibility: hidden;
+    }
 
     &.highlight,
     &.highlight--extra {
@@ -15,6 +18,16 @@
       background-color: $colorPrimary;
       box-shadow: $colorPrimary 0 0 0.5em;
       text-shadow: $colorSecondary 0 0 0.25em;
+    }
+  }
+
+  .highlight--menu {
+    background-color: $colorPrimary;
+    box-shadow: $colorPrimary 0 0 0.5em;
+
+    .highlight--extra {
+      background-color: transparent;
+      box-shadow: none;
     }
   }
 }

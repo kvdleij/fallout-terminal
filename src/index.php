@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: Karst
- * Date: 3-8-2017
- * Time: 22:56
+ * Date: 16-8-2017
+ * Time: 17:49
  */
 
 session_start();
@@ -12,17 +12,19 @@ include_once "classes/TermLink.php";
 
 use ROBCO\TermLink;
 
+$request = $_SERVER["REQUEST_URI"];
+$params = explode("/", $request);
+
 $difficulty = TermLink::DIFF_NOVICE;
 
 if (filter_has_var(INPUT_GET, "diff")) {
-    $difficulty = filter_input(INPUT_GET, "diff", FILTER_SANITIZE_NUMBER_INT);
-    if ($difficulty < 0 || $difficulty > 3) {
-        $difficulty = TermLink::DIFF_NOVICE;
-    }
+	$difficulty = filter_input(INPUT_GET, "diff", FILTER_SANITIZE_NUMBER_INT);
+	if ($difficulty < 0 || $difficulty > 3) {
+		$difficulty = TermLink::DIFF_NOVICE;
+	}
 }
 
 $termLink = new TermLink($difficulty);
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,24 +36,37 @@ $termLink = new TermLink($difficulty);
 </head>
 <body>
 <div class="grid">
-    <div class="column column--54 terminal__header">
-        <div class="row"><?= $termLink->wrapCharacters("Welcome to ROBCO Industries (TM) Termlink") ?></div>
-        <div class="row"></div>
-        <div class="row"><?= $termLink->wrapCharacters("Password Required") ?></div>
-        <div class="row"></div>
-        <div class="row"><?= $termLink->wrapCharacters("Attempts Remaining:") ?>&nbsp;
-            <div class="attempts" data-attempts="4"></div>
+
+	<?php
+	if (!empty($params[1])) {
+		include_once($params[1] . ".php");
+	} else {
+		?>
+        <div class="column column--54 terminal__header">
+            <div class="row"><?= $termLink->wrapCharacters("Welcome to ROBCO Industries (TM) Termlink") ?></div>
+            <div class="row"></div>
+            <div class="row"><?= $termLink->wrapCharacters(">SET TERMINAL/INQUIRE") ?></div>
+            <div class="row"></div>
+            <div class="row"><?= $termLink->wrapCharacters("RIT-V300") ?></div>
+            <div class="row"></div>
+            <div class="row"><?= $termLink->wrapCharacters(">SET FILE/PROTECTION=OWNER:RWED ACCOUNTS.F") ?></div>
+            <div class="row"><?= $termLink->wrapCharacters(">SET HALT RESTART/MAINT") ?></div>
+            <div class="row"></div>
+            <div class="row"><?= $termLink->wrapCharacters("Initializing Robco Industries(TM) MF Boot Agent v2.3.0") ?></div>
+            <div class="row"><?= $termLink->wrapCharacters("RETROS BIOS") ?></div>
+            <div class="row"><?= $termLink->wrapCharacters("RBIOS-4.02.08.00 52EE5.E7.E8") ?></div>
+            <div class="row"><?= $termLink->wrapCharacters("Copyright 2201-2203 Robci Ind.") ?></div>
+            <div class="row"><?= $termLink->wrapCharacters("Uppermem: 64 KB") ?></div>
+            <div class="row"><?= $termLink->wrapCharacters("Root (5A8)") ?></div>
+            <div class="row"><?= $termLink->wrapCharacters("Maintenance Mode") ?></div>
+            <div class="row"></div>
+            <div class="row"><?= $termLink->wrapCharacters(">RUN DEBUG/ACCOUNTS.F") ?></div>
+            <div class="row"></div>
+            <div class="row menu"><?= $termLink->wrapCharacters("[ INSTRUCTIONS ]") ?></div>
+            <div class="row menu"><?= $termLink->wrapCharacters("[ HACK TERMINAL ]") ?></div>
         </div>
-        <div class="row"></div>
-    </div>
-    <div class="row row--full-width">
-        <div class="column column--40" id="entries">
-			<?= $termLink->createRows($termLink->code, 12) ?>
-        </div>
-        <div class="column column--14" id="console">
-            <div class="row" id="consoleLine"><span>></span><em></em><span class="caret"></span></div>
-        </div>
-    </div>
+	<?php } ?>
+
 </div>
 <script
         src="http://code.jquery.com/jquery-3.2.1.min.js"

@@ -10,7 +10,7 @@
     function typify($element, $speed) {
         $speed = $speed || 200;
 
-        var letters = $element.find("span");
+        var letters = $element.find("span:not(.visible)");
 
         var currentLetter = 0;
         typeInterval = setInterval(function () {
@@ -23,6 +23,11 @@
                     writeToConsole($(".highlight").text());
                 }
                 typingInitialScreen = false;
+
+                if ($(".menu").length) {
+                    highlightMenu($(".menu").first());
+                }
+
                 return true;
             }
         }, $speed);
@@ -36,6 +41,10 @@
 
         clearInterval(typeInterval);
         $(".grid span").css("display", "inline-block");
+
+        if ($(".menu").length) {
+            highlightMenu($(".menu").first());
+        }
 
         switch ($direction) {
             //down
@@ -147,54 +156,56 @@
                 break;
         }
 
-        $(".highlight--extra").removeClass("highlight--extra");
-        var $newTarget = $(".highlight");
+        if ($(".menu").length === 0) {
+            $(".highlight--extra").removeClass("highlight--extra");
+            var $newTarget = $(".highlight");
 
-        var consoleOutput = $newTarget.text();
+            var consoleOutput = $newTarget.text();
 
-        if ($newTarget.hasClass("spec-seq-start")) {
-            var seqChar = $newTarget.data("char");
-            var hasEndPoint = false;
-            var endPoint = null;
-            $newTarget.nextAll().each(function () {
-                if ($(this).hasClass("word")) {
-                    return false;
+            if ($newTarget.hasClass("spec-seq-start")) {
+                var seqChar = $newTarget.data("char");
+                var hasEndPoint = false;
+                var endPoint = null;
+                $newTarget.nextAll().each(function () {
+                    if ($(this).hasClass("word")) {
+                        return false;
+                    }
+
+                    if ($(this).hasClass("spec-seq-end") && $(this).data("char") === seqChar) {
+                        hasEndPoint = true;
+                        endPoint = $(this);
+                        return false;
+                    }
+                });
+
+                if (hasEndPoint) {
+                    $newTarget.nextUntil(endPoint).addClass("highlight--extra");
+                    endPoint.addClass("highlight--extra");
+
+                    $(".highlight--extra").each(function () {
+                        consoleOutput += $(this).text();
+                    });
                 }
+            }
 
-                if ($(this).hasClass("spec-seq-end") && $(this).data("char") === seqChar) {
-                    hasEndPoint = true;
-                    endPoint = $(this);
-                    return false;
-                }
-            });
+            if ($newTarget.hasClass("word")) {
+                var wordNr = $newTarget.data("word");
+                $("[data-word='" + wordNr + "'").addClass("highlight--extra");
 
-            if (hasEndPoint) {
-                $newTarget.nextUntil(endPoint).addClass("highlight--extra");
-                endPoint.addClass("highlight--extra");
+                consoleOutput = "";
 
-                $(".highlight--extra").each(function () {
+                $(".column-l .highlight--extra").each(function () {
+                    consoleOutput += $(this).text();
+                });
+
+                $(".column-r .highlight--extra").each(function () {
                     consoleOutput += $(this).text();
                 });
             }
-        }
 
-        if ($newTarget.hasClass("word")) {
-            var wordNr = $newTarget.data("word");
-            $("[data-word='" + wordNr + "'").addClass("highlight--extra");
-
-            consoleOutput = "";
-
-            $(".column-l .highlight--extra").each(function () {
-                consoleOutput += $(this).text();
-            });
-
-            $(".column-r .highlight--extra").each(function () {
-                consoleOutput += $(this).text();
-            });
-        }
-
-        if ($currentTarget !== $newTarget) {
-            writeToConsole(consoleOutput);
+            if ($currentTarget !== $newTarget) {
+                writeToConsole(consoleOutput);
+            }
         }
     }
 
@@ -236,6 +247,11 @@
             var $attemptBlock = $(document.createElement("span")).addClass("attempt-block");
             $attemptBlock.appendTo($attempts);
         }
+    }
+
+    function highlightMenu($element) {
+        $($element).addClass("highlight--menu");
+        $($element).find("span").addClass("highlight--extra");
     }
 
     $(document).ready(function () {

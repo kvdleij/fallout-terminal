@@ -48,7 +48,7 @@ class TermLink {
 		}
 	}
 
-	public function wrapCharacters($input, $codeClasses = false, $strIndex = 0) {
+	public function wrapCharacters($input, $codeClasses = false, $strIndex = 0, $visibleFromStart = false) {
 		$currentIndex = $strIndex;
 		$output = "";
 
@@ -99,7 +99,11 @@ class TermLink {
 					}
 				}
 
-				$output .= "<span" . ($codeClasses ? $extraClass : "") . ">" . $input[$i] . "</span>";
+				if ($visibleFromStart) {
+					$extraClass .= " class='visible'";
+				}
+
+				$output .= "<span" . ($codeClasses || $visibleFromStart ? $extraClass : "") . ">" . $input[$i] . "</span>";
 				$currentIndex++;
 			}
 
