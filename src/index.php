@@ -13,7 +13,7 @@ include_once "classes/TermLink.php";
 use ROBCO\TermLink;
 
 $queryString = $_SERVER["QUERY_STRING"];
-$request = $_SERVER["REQUEST_URI"];
+$request = str_replace("/kvdleij/fallout-terminal", "", $_SERVER["REQUEST_URI"]);
 if (!empty($queryString)) {
     $request = str_replace("?" . $queryString, "", $request);
 }

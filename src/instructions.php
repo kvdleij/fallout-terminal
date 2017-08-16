@@ -17,7 +17,7 @@
     <div class="row"></div>
     <div class="row"><?= $termLink->wrapCharacters("_____________________________________________________") ?></div>
     <div class="row"></div>
-    <div class="row menu" data-targetloc="/main"><?= $termLink->wrapCharacters("[ MAIN MENU ]") ?></div>
+    <div class="row menu" data-targetloc="main"><?= $termLink->wrapCharacters("[ MAIN MENU ]") ?></div>
 </div>
 
 

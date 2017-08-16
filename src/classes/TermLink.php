@@ -48,7 +48,7 @@ class TermLink {
 			// error opening the file.
 		}
 
-		$this->words["special"] = Array(
+		$this->words[13] = Array(
 			"AEROSMITH",
 			"LAMBOFGOD",
 			"METALLICA",
@@ -180,7 +180,7 @@ class TermLink {
 				$this->wordLength = rand(11, 12);
 				break;
 			case self::DIFF_SPECIAL:
-				$this->wordLength = "special";
+				$this->wordLength = 13;
 				break;
 		}
 
@@ -189,6 +189,10 @@ class TermLink {
 		$currentWords = array();
 		for($i = 0;$i < 16;$i++){
 			$currentWords[] = trim($this->words[$this->wordLength][$currentWordKeys[$i]]);
+		}
+
+		if ($this->wordLength === 13) {
+			$this->wordLength = 9;
 		}
 
 		$output = "";
