@@ -174,6 +174,9 @@
                                                 addConsoleLine("Init Lockout", false);
                                                 $(".highlight").removeClass("highlight");
                                                 $(".highlight--extra").removeClass("highlight--extra");
+                                                setInterval(function(){
+                                                    window.location.href="main";
+                                                }, 400);
                                                 return false;
                                             }
                                         } else if (result.misc.attempt === "success") {

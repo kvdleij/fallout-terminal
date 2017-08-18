@@ -66,6 +66,8 @@ class TermLink {
 			"RAMMSTEIN",
 			"DISTURBED",
 			"POWERWOLF",
+			"SHINEDOWN",
+			"GUANOAPES"
 		);
 	}
 

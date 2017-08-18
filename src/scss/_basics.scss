@@ -1,9 +1,14 @@
+@font-face {
+  font-family: FixedSys;
+  src: url("../font/FSEX302.ttf");
+}
+
 * {
   cursor: default;
 }
 
 html {
-  font-family: "Courier New", arial, sans-serif;
+  font-family: "FixedSys", "Courier New", arial, sans-serif;
   color: $colorPrimary;
   background-color: $colorSecondary;
   text-shadow: $colorPrimary 0 0 0.5em;
